@@ -1,4 +1,4 @@
-public static class Arrays
+ public static class Arrays
 {
     /// <summary>
     /// This function will produce an array of size 'length' starting with 'number' followed by multiples of 'number'.  For 
@@ -8,12 +8,25 @@ public static class Arrays
     /// <returns>array of doubles that are the multiples of the supplied number</returns>
     public static double[] MultiplesOf(double number, int length)
     {
-        // TODO Problem 1 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
-
-        return []; // replace this return statement with your own
+        // Set the amount of multiples to return given in the "length" argument.
+        int multiplesToFind = length;
+        // Set a starting number from the "number" argument witch will be incremented after each check.
+        double startingNumber = number;
+        // Create a array with a length of "length" argument that will store all the numbers that are multiples of the "number" argument.
+        double[] result = new double[length];
+        // Loop until "multiplesToFind" reaches 0, meaning that the target amount of multiples set by "lenght" argument has been reached.
+        for (int i = 0; multiplesToFind != 0; i++)
+        {
+            // Checks if the "startingNumber" is a multiple of "number". If "True" it will add the multiple to the "results" list and reduce "multiplesToFind" by 1.
+            if (startingNumber % number == 0)
+            {
+                result[result.Length - multiplesToFind] = startingNumber;
+                multiplesToFind--;
+            }
+            // Then "startingNumber" will increment by 0.5 if is positive and reduce by 0.5 if negative.  
+            startingNumber = (startingNumber > 0) ? startingNumber += 0.5 : startingNumber -= 0.5;
+        }
+        return result; // Return the result.
     }
 
     /// <summary>
@@ -25,9 +38,11 @@ public static class Arrays
     /// </summary>
     public static void RotateListRight(List<int> data, int amount)
     {
-        // TODO Problem 2 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // Grab the part of the list that would be sent to the start of the list if moved right by the specified amount given in "amount" argument and put it into a new "partOfList" list.
+        List<int> partOfList = data.GetRange(data.Count - amount, amount);
+        // Remove that part from the list.
+        data.RemoveRange(data.Count - amount, amount);
+        // Then grab the removed part that was stored in "partOfList" list and insert it at the beginning of the original list.
+        data.InsertRange(0, partOfList);
     }
 }
