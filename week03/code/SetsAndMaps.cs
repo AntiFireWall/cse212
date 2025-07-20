@@ -21,8 +21,24 @@ public static class SetsAndMaps
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        var wordsSet = new HashSet<string>(words);
+        var pairSet = new HashSet<string>();
+
+        foreach (string word in words)
+        {
+            char[] charArray = word.ToCharArray();
+            Array.Reverse(charArray);
+            if (wordsSet.Contains(new string(charArray)) && Array.IndexOf(words, word) > Array.IndexOf(words, new string(charArray)))
+            {
+                string pair = $"{word} & {new string(charArray)}";
+                pairSet.Add(pair);
+            }
+        }
+
+        string[] returnArray = new string[pairSet.Count];
+        pairSet.CopyTo(returnArray);
+
+        return returnArray;
     }
 
     /// <summary>
@@ -42,7 +58,15 @@ public static class SetsAndMaps
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
+            if (!degrees.ContainsKey(fields[3]))
+            {
+                degrees[fields[3]] = 1;
+
+            }
+            else
+            {
+                degrees[fields[3]]++;
+            }
         }
 
         return degrees;
@@ -66,8 +90,47 @@ public static class SetsAndMaps
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        string cleanWord1 = word1.ToLower().Replace(" ", "");
+        string cleanWord2 = word2.ToLower().Replace(" ", "");
+        var word1Map = new Dictionary<char, int>();
+        var word2Map = new Dictionary<char, int>();
+        int isSameCount = 0;
+
+        if (cleanWord1.Length != cleanWord2.Length)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < cleanWord1.Length; i++)
+        {
+            if (word1Map.ContainsKey(cleanWord1[i]))
+            {
+                word1Map[cleanWord1[i]]++;
+            }
+            else
+            {
+                word1Map[cleanWord1[i]] = 1;
+            }
+
+            if (word2Map.ContainsKey(cleanWord2[i]))
+            {
+                word2Map[cleanWord2[i]]++;
+            }
+            else
+            {
+                word2Map[cleanWord2[i]] = 1;
+            }
+        }
+
+        foreach (var key in word1Map.Keys)
+        {
+            if (word2Map.ContainsKey(key) && word1Map[key] == word2Map[key])
+            {
+                isSameCount++;
+            }
+        }
+
+        return isSameCount == word1Map.Count;
     }
 
     /// <summary>
@@ -96,11 +159,28 @@ public static class SetsAndMaps
 
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
 
+        var currentDayEntries = new List<string>();
+
+        foreach (var entry in featureCollection.Features)
+        {
+            DateTime entryDate = DateTimeOffset.FromUnixTimeMilliseconds(entry.Properties.Time).UtcDateTime;
+            DateTime currentDate = DateTime.Now;
+            string formattedEntryDate = entryDate.ToString("dd/MM/yyyy");
+            string formattedCurrentDate = currentDate.ToString("dd/MM/yyyy");
+
+            if (formattedCurrentDate.Equals(formattedEntryDate))
+            {
+                string displayEntry = $"{entry.Properties.Place} - Mag {entry.Properties.Mag}";
+                currentDayEntries.Add(displayEntry);
+            }
+
+        }
+
         // TODO Problem 5:
         // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
         // on those classes so that the call to Deserialize above works properly.
-        // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
+        // 2. Add code below to create a string out each place a earthquake has happened today and its magnitude.
         // 3. Return an array of these string descriptions.
-        return [];
+        return currentDayEntries.ToArray();
     }
 }
